@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Frogitrice AirFrog — Home</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#00d1b2;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.03);
+      --maxw:1100px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial;
+      background: linear-gradient(180deg,#071027 0%, #071e2b 100%);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+    }
+    .container{max-width:var(--maxw);margin:0 auto;padding:28px;}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#6ee7b7);
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:#052018;
+      box-shadow:0 6px 20px rgba(0,0,0,.45);
+    }
+    .brand h1{font-size:18px;margin:0}
+    nav{display:flex;gap:12px;align-items:center}
+    .btn{
+      background:var(--accent);color:#022018;padding:10px 14px;border-radius:10px;font-weight:600;border:0;cursor:pointer;
+      box-shadow:0 6px 20px rgba(0,0,0,.35);
+    }
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.06);color:var(--muted)}
+    /* HERO */
+    .hero{display:flex;gap:24px;align-items:center;margin-bottom:30px}
+    .hero-left{flex:1}
+    .hero-right{flex:1;display:flex;justify-content:center;align-items:center}
+    .hero-card{background:var(--glass);padding:22px;border-radius:14px;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+    .hero h2{margin:0 0 8px 0;font-size:28px}
+    .hero p{margin:0;color:var(--muted)}
+    /* carousel */
+    .carousel{position:relative;width:100%;height:320px;border-radius:12px;overflow:hidden}
+    .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center;transition:opacity .6s ease,transform .6s ease;opacity:0;transform:scale(.98)}
+    .slide.active{opacity:1;transform:scale(1)}
+    .slide .overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 0%, rgba(2,8,23,.7) 70%);}
+
+    .slide .card{
+      position:relative;z-index:2;color:white;padding:18px;border-radius:10px;background:linear-gradient(90deg, rgba(0,0,0,.25), rgba(255,255,255,0.02));
+      max-width:420px;text-align:left;
+    }
+    .dots{position:absolute;left:14px;bottom:14px;display:flex;gap:8px;z-index:5}
+    .dot{width:10px;height:10px;border-radius:999px;background:rgba(255,255,255,.18);cursor:pointer}
+    .dot.active{background:var(--accent);box-shadow:0 6px 12px rgba(0,0,0,.4)}
+
+    /* products grid */
+    .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:26px}
+    .product{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+      border-radius:12px;padding:12px;overflow:hidden;position:relative;
+    }
+    .product .imgwrap{height:160px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;transition:transform .35s ease}
+    .product img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+    .product:hover img{transform:scale(1.12)}
+    .product h3{margin:10px 0 4px 0;font-size:16px}
+    .price{font-weight:700;color:var(--accent)}
+    .desc{color:var(--muted);font-size:14px;margin-bottom:8px;min-height:40px}
+    .product .actions{display:flex;gap:8px}
+    /* cart icon */
+    .cart-btn{position:relative}
+    .cart-count{position:absolute;top:-6px;right:-6px;background:#ff6b6b;color:white;padding:4px 7px;border-radius:999px;font-size:12px}
+
+    footer{margin:40px 0 10px;color:var(--muted);text-align:center;font-size:13px}
+
+    /* cart modal */
+    .cart-modal{position:fixed;right:20px;bottom:20px;width:360px;background:var(--card);border-radius:12px;padding:14px;box-shadow:0 30px 50px rgba(1,8,20,.6);z-index:60;display:none;flex-direction:column;gap:12px}
+    .cart-modal.show{display:flex}
+    .cart-item{display:flex;gap:10px;align-items:center}
+    .cart-item img{width:60px;height:60px;object-fit:cover;border-radius:8px}
+    .qty{display:flex;gap:6px;align-items:center}
+    .small{font-size:13px;color:var(--muted)}
+
+    @media (max-width:760px){
+      .hero{flex-direction:column}
+      .carousel{height:220px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">AF</div>
+        <div>
+          <h1>AirFrog</h1>
+          <div class="small">Frogitrice ad aria — cottura veloce e sana</div>
+        </div>
+      </div>
+
+      <nav>
+        <button class="btn ghost" id="open-cart">Carrello <span class="cart-count" id="cart-count" style="display:none">0</span></button>
+        <a class="btn" href="#products">Acquista</a>
+      </nav>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left hero-card">
+        <h2>La Frogitrice ad aria che salta fuori</h2>
+        <p>AirFrog combina velocità, design e facilità d'uso. Cottura fino al 90% più leggera con risultati croccanti.</p>
+        <div style="margin-top:12px;display:flex;gap:8px">
+          <a class="btn" href="#products">Scopri</a>
+          <button class="btn ghost" id="hero-cta">Offerta Lampo</button>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <div class="carousel" id="carousel">
+          <!-- slides -->
+          <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1541599540903-216a46caad12?q=80&w=1600&auto=format&fit=crop');">
+            <div class="overlay"></div>
+            <div class="card">
+              <h3>Offerta lancio</h3>
+              <p>AirFrog - Sconto 20% per i primi acquirenti</p>
+            </div>
+          </div>
+
+          <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1542444459-db8f0d1640f9?q=80&w=1600&auto=format&fit=crop');">
+            <div class="overlay"></div>
+            <div class="card">
+              <h3>Cucina in 15 minuti</h3>
+              <p>Padella antiaderente integrata e temperatura controllata</p>
+            </div>
+          </div>
+
+          <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1546549039-3fb3b7d4b6aa?q=80&w=1600&auto=format&fit=crop');">
+            <div class="overlay"></div>
+            <div class="card">
+              <h3>Design compatto</h3>
+              <p>Perfetta per cucine moderne e piccoli spazi</p>
+            </div>
+          </div>
+
+          <div class="dots" id="dots"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="container" style="padding-left:0;padding-right:0">
+      <h2 style="margin-top:6px">Prodotto</h2>
+      <div class="products" id="product-list">
+        <!-- prodotto unico -->
+        <article class="product">
+          <div class="imgwrap">
+            <img src="https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=1200&auto=format&fit=crop" alt="AirFrog Frogitrice" />
+          </div>
+          <h3>AirFrog — Frogitrice ad aria</h3>
+          <div class="price">€129</div>
+          <div class="desc" id="short-desc">
+            Frogitrice ad aria AirFrog: croccante fuori e morbida dentro, riduce i grassi fino al 90%... 
+          </div>
+          <div class="actions">
+            <a class="btn" href="product.html">Dettagli</a>
+            <button class="btn ghost" id="quick-add">Aggiungi</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      © <span id="year"></span> AirFrog — Tutti i diritti riservati
+    </footer>
+  </div>
+
+  <!-- cart modal -->
+  <div class="cart-modal" id="cart-modal" aria-hidden="true">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <strong>Carrello</strong>
+      <button class="btn ghost" id="close-cart">Chiudi</button>
+    </div>
+    <div id="cart-items" style="display:flex;flex-direction:column;gap:10px"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div class="small">Totale</div>
+        <div id="cart-total" style="font-weight:700">€0</div>
+      </div>
+      <div>
+        <button class="btn" id="checkout">Procedi al pagamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // basic variables
+    const year = new Date().getFullYear();
+    document.getElementById('year').textContent = year;
+
+    // HERO carousel auto every 2 seconds
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dotsWrap = document.getElementById('dots');
+    let idx = 0, interval;
+
+    function renderDots(){
+      dotsWrap.innerHTML = '';
+      slides.forEach((s,i)=>{
+        const d = document.createElement('div');
+        d.className = 'dot' + (i===idx?' active':'');
+        d.addEventListener('click', ()=>{ goTo(i); resetInterval(); });
+        dotsWrap.appendChild(d);
+      })
+    }
+    function updateSlides(){
+      slides.forEach((s,i)=> s.classList.toggle('active', i===idx));
+      renderDots();
+    }
+    function goTo(i){ idx = i % slides.length; if(idx<0) idx = slides.length-1; updateSlides(); }
+    function next(){ idx = (idx+1) % slides.length; updateSlides(); }
+    function resetInterval(){ clearInterval(interval); interval = setInterval(next,2000); } // 2 seconds
+    updateSlides();
+    resetInterval();
+
+    // CART (localStorage)
+    const CART_KEY = 'airfrog_cart_v1';
+    function getCart(){ return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+    function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); renderCartCount(); renderCartModal(); }
+
+    // product data (single product)
+    const product = {
+      id: 'airfrog-001',
+      title: 'AirFrog — Frogitrice ad aria',
+      price: 12900, // cents
+      priceDisplay: '€129',
+      image: 'https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=1200&auto=format&fit=crop',
+      description: 'Frogitrice ad aria AirFrog: croccante fuori e morbida dentro, riduce i grassi fino al 90%, facile da pulire e con 6 programmi automatici.'
+    };
+
+    document.getElementById('quick-add').addEventListener('click', ()=>{
+      const c = getCart();
+      const found = c.find(i=>i.id===product.id);
+      if(found){ found.qty = Math.min(9, found.qty + 1); } else { c.push({id:product.id, title:product.title, price:product.price, qty:1, image:product.image}); }
+      saveCart(c);
+      animateAddToCart();
+    });
+
+    function renderCartCount(){
+      const c = getCart();
+      const total = c.reduce((s,i)=>s+i.qty,0);
+      const el = document.getElementById('cart-count');
+      if(total>0){ el.style.display='inline-block'; el.textContent = total; } else { el.style.display='none'; }
+    }
+
+    // cart modal UI
+    const cartModal = document.getElementById('cart-modal');
+    document.getElementById('open-cart').addEventListener('click', ()=>cartModal.classList.toggle('show'));
+    document.getElementById('close-cart').addEventListener('click', ()=>cartModal.classList.remove('show'));
+
+    function renderCartModal(){
+      const itemsWrap = document.getElementById('cart-items');
+      itemsWrap.innerHTML = '';
+      const c = getCart();
+      if(c.length===0){ itemsWrap.innerHTML = '<div class="small">Carrello vuoto</div>'; document.getElementById('cart-total').textContent = '€0'; return; }
+      let total = 0;
+      c.forEach(it=>{
+        total += it.price * it.qty;
+        const div = document.createElement('div'); div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${it.image}" alt="${it.title}" />
+          <div style="flex:1">
+            <div style="font-weight:600">${it.title}</div>
+            <div class="small">€${(it.price/100).toFixed(2)} x ${it.qty} = €${((it.price*it.qty)/100).toFixed(2)}</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:center">
+            <select class="qty-select">
+              ${Array.from({length:9},(_,i)=>`<option value="${i+1}" ${i+1===it.qty?'selected':''}>${i+1}</option>`).join('')}
+            </select>
+            <button class="btn ghost remove">Rimuovi</button>
+          </div>
+        `;
+        // events for qty and remove
+        setTimeout(()=>{ // ensure DOM is ready
+          div.querySelector('.qty-select').addEventListener('change', (e)=>{
+            it.qty = parseInt(e.target.value,10);
+            saveCart(c);
+          });
+          div.querySelector('.remove').addEventListener('click', ()=>{
+            const idx = c.findIndex(x=>x.id===it.id);
+            if(idx>-1){ c.splice(idx,1); saveCart(c); }
+          });
+        },0);
+        itemsWrap.appendChild(div);
+      });
+      document.getElementById('cart-total').textContent = '€' + (total/100).toFixed(2);
+    }
+
+    // checkout (calls server to create stripe session)
+    document.getElementById('checkout').addEventListener('click', async ()=>{
+      const c = getCart();
+      if(c.length===0){ alert('Il carrello è vuoto'); return; }
+      // build a payload for server
+      try{
+        document.getElementById('checkout').disabled = true;
+        const resp = await fetch('/create-checkout-session', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({items:c})
+        });
+        const data = await resp.json();
+        if(data.url){
+          // clear cart if you want; better after success redirect but we'll leave as is
+          window.location = data.url; // redirect to Stripe Checkout
+        } else {
+          alert('Errore durante il checkout');
+          console.error(data);
+        }
+      }catch(err){
+        console.error(err);
+        alert('Impossibile contattare il server per il pagamento');
+      } finally {
+        document.getElementById('checkout').disabled = false;
+      }
+    });
+
+    // small add-to-cart animation
+    function animateAddToCart(){
+      const img = document.createElement('img');
+      img.src = product.image;
+      img.style.position='fixed'; img.style.width='80px'; img.style.height='80px'; img.style.borderRadius='8px';
+      img.style.right='80px'; img.style.bottom='120px'; img.style.zIndex=9999; img.style.transition='transform 600ms cubic-bezier(.2,.9,.2,1), opacity 600ms';
+      document.body.appendChild(img);
+      requestAnimationFrame(()=>{ img.style.transform='translateY(-60px) scale(.3)'; img.style.opacity='0.4'; });
+      setTimeout(()=>{ img.remove(); renderCartCount(); renderCartModal(); },700);
+    }
+
+    // initialize
+    renderCartCount();
+    renderCartModal();
+
+  </script>
+</body>
+</html>

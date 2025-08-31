@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ordine annullato</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #fff;
+      text-align: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      animation: fadeIn 1s ease-out;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+    }
+    a {
+      text-decoration: none;
+      background: #fff;
+      color: #ff4b2b;
+      padding: 0.8rem 1.5rem;
+      border-radius: 2rem;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+    a:hover {
+      background: #f2f2f2;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>❌ Ordine annullato</h1>
+    <p>L’acquisto non è stato completato.<br>
+       Puoi riprovare in qualsiasi momento.</p>
+    <a href="product.html">Torna al prodotto</a>
+  </div>
+</body>
+</html>

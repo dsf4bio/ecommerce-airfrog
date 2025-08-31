@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AirFrog — Dettagli prodotto</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#071027; --card:#071827; --accent:#00d1b2; --muted:#94a3b8; --maxw:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial,Roboto,-apple-system,Segoe UI;
+      background:linear-gradient(180deg,#071027,#04121b);
+      color:#e9f1f7;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .container{max-width:var(--maxw);margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .logo{width:46px;height:46px;border-radius:8px;background:linear-gradient(135deg,var(--accent),#6ee7b7);display:flex;align-items:center;justify-content:center;color:#042018;font-weight:700}
+    .btn{background:var(--accent);color:#022018;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600;transition:background .16s}
+    .btn:hover{background:#00b89c}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.08);color:var(--muted)}
+
+    /* cart icon */
+    .cart-area{display:flex;gap:14px;align-items:center}
+    .cart-icon{position:relative;cursor:pointer;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02)}
+    .cart-icon svg{width:26px;height:26px;color:var(--accent);display:block}
+    .cart-count{
+      position:absolute;top:-6px;right:-6px;background:var(--accent);color:#022018;font-size:12px;font-weight:700;padding:4px 7px;border-radius:999px;
+      box-shadow:0 6px 14px rgba(0,0,0,.45)
+    }
+
+    .product-wrap{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start}
+    .gallery{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:14px;border-radius:12px}
+    .main-img{width:100%;height:420px;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .main-img img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+    .thumbs{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .thumbs img{width:80px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;transition:transform .18s ease,border .18s ease;border:2px solid transparent}
+    .thumbs img.active{border-color:var(--accent);transform:scale(1.03)}
+
+    .info{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:20px;border-radius:12px;display:flex;flex-direction:column;gap:14px}
+    .price{font-size:22px;font-weight:800;color:var(--accent)}
+    .desc{color:var(--muted);line-height:1.5}
+    .qty-row{display:flex;align-items:center;gap:12px}
+    .qty-row label{font-weight:700;min-width:78px}
+    .select{
+      padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+      color:inherit;font-size:15px;appearance:none;min-width:86px;text-align:center;
+    }
+    .add-btn{align-self:flex-start;margin-top:4px}
+
+    /* cart modal */
+    .cart-modal{
+      position:fixed; right:24px; top:80px; width:360px; max-height:72vh; overflow:auto;
+      background:var(--card); border-radius:12px; padding:12px; box-shadow:0 30px 60px rgba(0,0,0,0.6);
+      display:none; z-index:9999;
+    }
+    .cart-modal.show{display:block}
+    .cart-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.02)}
+    .cart-items{display:flex;flex-direction:column;gap:10px;padding-top:10px}
+    .cart-item{display:flex;gap:10px;align-items:center}
+    .cart-item img{width:64px;height:64px;object-fit:cover;border-radius:8px}
+    .cart-item .meta{flex:1;display:flex;flex-direction:column;gap:6px}
+    .cart-item .meta .title{font-weight:700;font-size:14px}
+    .cart-item .meta .small{font-size:13px;color:var(--muted)}
+    .cart-item .controls{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+    .cart-item select{padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:transparent;color:inherit}
+
+    .cart-footer{padding-top:10px;border-top:1px solid rgba(255,255,255,.02);display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .cart-total{font-weight:800;font-size:16px}
+    .checkout-btn{background:var(--accent);color:#022018;padding:10px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+
+    /* responsive */
+    @media (max-width:920px){
+      .product-wrap{grid-template-columns:1fr}
+      .cart-modal{right:12px;left:12px;top:auto;bottom:18px;width:auto;max-height:50vh}
+      .main-img{height:300px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="logo">AF</div>
+        <div>
+          <h2 style="margin:0">AirFrog</h2>
+          <div class="small" style="color:var(--muted)">Frogitrice ad aria — dettagli</div>
+        </div>
+      </div>
+
+      <div class="cart-area">
+        <a class="btn" href="index.html">Home</a>
+
+        <!-- cart icon: APRI il carrello (non fa redirect) -->
+        <div class="cart-icon" id="cart-button" title="Apri carrello">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6h15l-1.5 9h-13z" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="20" r="1.5"/>
+            <circle cx="18" cy="20" r="1.5"/>
+          </svg>
+          <div class="cart-count" id="cart-count">0</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="product-wrap" aria-live="polite">
+      <div>
+        <div class="gallery">
+          <div class="main-img" id="main-img">
+            <img src="https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=1600&auto=format&fit=crop" alt="AirFrog">
+          </div>
+          <div class="thumbs" id="thumbs" role="list">
+            <img class="active" src="https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=800&auto=format&fit=crop" data-large="https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=1600&auto=format&fit=crop" role="listitem" alt="thumb1">
+            <img src="https://images.unsplash.com/photo-1541599540903-216a46caad12?q=80&w=800&auto=format&fit=crop" data-large="https://images.unsplash.com/photo-1541599540903-216a46caad12?q=80&w=1600&auto=format&fit=crop" role="listitem" alt="thumb2">
+            <img src="https://images.unsplash.com/photo-1542444459-db8f0d1640f9?q=80&w=800&auto=format&fit=crop" data-large="https://images.unsplash.com/photo-1542444459-db8f0d1640f9?q=80&w=1600&auto=format&fit=crop" role="listitem" alt="thumb3">
+            <img src="https://images.unsplash.com/photo-1546549039-3fb3b7d4b6aa?q=80&w=800&auto=format&fit=crop" data-large="https://images.unsplash.com/photo-1546549039-3fb3b7d4b6aa?q=80&w=1600&auto=format&fit=crop" role="listitem" alt="thumb4">
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop" data-large="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=1600&auto=format&fit=crop" role="listitem" alt="thumb5">
+          </div>
+
+          <!-- quick specs -->
+          <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+            <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);flex:1;min-width:140px">
+              <div style="font-weight:700">6 programmi</div>
+              <div class="small" style="color:var(--muted)">Frittura, gratin, forno</div>
+            </div>
+            <div style="padding:12px;border-radius:10px;background:rgba(255,255,255,0.02);flex:1;min-width:140px">
+              <div style="font-weight:700">2L</div>
+              <div class="small" style="color:var(--muted)">Capacità ideale</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="info" aria-labelledby="product-title">
+        <h1 id="product-title" style="margin:0">AirFrog — Frogitrice ad aria</h1>
+        <div class="price" id="price">€129</div>
+        <div class="desc" id="full-desc">
+          Frogitrice ad aria AirFrog: croccante fuori e morbida dentro. Riduce i grassi fino al 90%, 6 programmi automatici, pannello touch con display LED, cestello antiaderente rimovibile e facile da pulire. Potenza 1400W, timer fino a 60 minuti, spegnimento automatico e diversi livelli di temperatura.
+        </div>
+
+        <div class="qty-row">
+          <label for="qty">Quantità</label>
+          <select id="qty" class="select" aria-label="Seleziona quantità">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+          </select>
+        </div>
+
+        <button id="add-to-cart" class="btn add-btn" aria-label="Aggiungi al carrello">Aggiungi al carrello</button>
+
+        <div style="font-size:14px;color:var(--muted)">
+          <strong>Spedizione:</strong> 2-5 giorni lavorativi<br>
+          <strong>Garanzia:</strong> 2 anni
+        </div>
+      </aside>
+    </main>
+
+    <footer style="margin-top:32px;color:var(--muted);text-align:center">© <span id="y"></span> AirFrog</footer>
+  </div>
+
+  <!-- CART MODAL -->
+  <div class="cart-modal" id="cart-modal" role="dialog" aria-label="Carrello">
+    <div class="cart-header">
+      <strong>Carrello</strong>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="close-cart" class="btn ghost" style="padding:6px 10px;font-size:13px">Chiudi</button>
+      </div>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <!-- elementi dinamici -->
+    </div>
+
+    <div class="cart-footer">
+      <div>
+        <div class="small" style="color:var(--muted)">Totale</div>
+        <div class="cart-total" id="cart-total">€0.00</div>
+      </div>
+      <div>
+        <button id="checkout" class="checkout-btn">Procedi al pagamento</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    /* PRODUTO */
+    const product = {
+      id: 'airfrog-001',
+      title: 'AirFrog — Frogitrice ad aria',
+      price: 12900, // cents
+      priceDisplay: '€129',
+      image: 'https://images.unsplash.com/photo-1600180758890-6f6fcf3fbf0e?q=80&w=1600&auto=format&fit=crop'
+    };
+
+    /* GALLERY */
+    const thumbs = Array.from(document.querySelectorAll('#thumbs img'));
+    const mainImg = document.querySelector('#main-img img');
+    thumbs.forEach(t=>{
+      t.addEventListener('click', ()=> {
+        thumbs.forEach(x=>x.classList.remove('active'));
+        t.classList.add('active');
+        mainImg.src = t.dataset.large || t.src;
+      });
+    });
+
+    /* CART STORAGE */
+    const CART_KEY = 'airfrog_cart_v1';
+    function getCart(){ return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+    function saveCart(c){ localStorage.setItem(CART_KEY, JSON.stringify(c)); renderCart(); updateCartCount(); }
+
+    /* RENDER / UI */
+    const cartModal = document.getElementById('cart-modal');
+    const cartItemsWrap = document.getElementById('cart-items');
+    const cartCountEl = document.getElementById('cart-count');
+    const cartTotalEl = document.getElementById('cart-total');
+    const cartButton = document.getElementById('cart-button');
+    const closeCartBtn = document.getElementById('close-cart');
+
+    function updateCartCount(){
+      const c = getCart();
+      const total = c.reduce((s,i)=>s+i.qty,0);
+      cartCountEl.textContent = total;
+    }
+
+    function formatPrice(cents){
+      return '€' + (cents/100).toFixed(2);
+    }
+
+    function renderCart(){
+      const c = getCart();
+      cartItemsWrap.innerHTML = '';
+      if(c.length===0){
+        cartItemsWrap.innerHTML = '<div class="small" style="color:var(--muted);padding:12px">Carrello vuoto</div>';
+        cartTotalEl.textContent = '€0.00';
+        return;
+      }
+      let total = 0;
+      c.forEach(item=>{
+        total += item.price * item.qty;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.image}" alt="${escapeHtml(item.title)}">
+          <div class="meta">
+            <div class="title">${escapeHtml(item.title)}</div>
+            <div class="small">${formatPrice(item.price)} x ${item.qty} = ${formatPrice(item.price*item.qty)}</div>
+          </div>
+          <div class="controls">
+            <select class="cart-qty" data-id="${item.id}">
+              ${Array.from({length:9},(_,i)=>`<option value="${i+1}" ${i+1===item.qty?'selected':''}>${i+1}</option>`).join('')}
+            </select>
+            <button class="btn ghost remove" data-id="${item.id}" style="padding:6px 8px;font-size:13px">Rimuovi</button>
+          </div>
+        `;
+        // attach events after insertion
+        cartItemsWrap.appendChild(div);
+      });
+
+      // add event listeners
+      Array.from(cartItemsWrap.querySelectorAll('.cart-qty')).forEach(sel=>{
+        sel.addEventListener('change', (e)=>{
+          const id = e.target.dataset.id;
+          const newQty = parseInt(e.target.value,10);
+          const c = getCart();
+          const f = c.find(x=>x.id===id);
+          if(f){ f.qty = newQty; saveCart(c); }
+        });
+      });
+      Array.from(cartItemsWrap.querySelectorAll('.remove')).forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = e.target.dataset.id;
+          const c = getCart();
+          const idx = c.findIndex(x=>x.id===id);
+          if(idx>-1){ c.splice(idx,1); saveCart(c); }
+        });
+      });
+
+      cartTotalEl.textContent = formatPrice(total);
+    }
+
+    // safe escape for text inserted via innerHTML
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]; });
+    }
+
+    /* OPEN/CLOSE CART */
+    function toggleCart(open){
+      if(open === undefined) open = !cartModal.classList.contains('show');
+      if(open){
+        renderCart();
+        cartModal.classList.add('show');
+      } else {
+        cartModal.classList.remove('show');
+      }
+    }
+    cartButton.addEventListener('click', ()=> toggleCart(true));
+    closeCartBtn.addEventListener('click', ()=> toggleCart(false));
+
+    /* ADD TO CART */
+    document.getElementById('add-to-cart').addEventListener('click', ()=>{
+      const qty = parseInt(document.getElementById('qty').value,10) || 1;
+      const c = getCart();
+      const found = c.find(i=>i.id===product.id);
+      if(found){ found.qty = Math.min(9, found.qty + qty); }
+      else { c.push({ id: product.id, title: product.title, price: product.price, qty: qty, image: product.image }); }
+      saveCart(c);
+      // show modal so user sees cart
+      toggleCart(true);
+    });
+
+    /* CHECKOUT (calls server to create Stripe Checkout session) */
+    document.getElementById('checkout').addEventListener('click', async ()=>{
+      const c = getCart();
+      if(!c || c.length===0){ alert('Carrello vuoto'); return; }
+      try{
+        document.getElementById('checkout').disabled = true;
+        const resp = await fetch('/create-checkout-session', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ items: c })
+        });
+        const data = await resp.json();
+        if(data && data.url){
+          // redirect to Stripe Checkout
+          window.location = data.url;
+        } else {
+          console.error(data);
+          alert('Errore durante la creazione della sessione di pagamento. Controlla il server.');
+        }
+      } catch(err){
+        console.error(err);
+        alert('Impossibile contattare il server di checkout. Assicurati che server.js sia avviato.');
+      } finally {
+        document.getElementById('checkout').disabled = false;
+      }
+    });
+
+    /* init */
+    updateCartCount(); // shows count on header
+
+    /* keyboard ESC to close cart */
+    document.addEventListener('keydown', (e)=> { if(e.key === 'Escape') toggleCart(false); });
+  </script>
+</body>
+</html>
