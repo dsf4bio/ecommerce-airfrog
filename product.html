@@ -324,7 +324,7 @@
       if(!c || c.length===0){ alert('Carrello vuoto'); return; }
       try{
         document.getElementById('checkout').disabled = true;
-        const resp = await fetch('/create-checkout-session', {
+       const resp = await fetch('/api/create-checkout-session', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ items: c })
